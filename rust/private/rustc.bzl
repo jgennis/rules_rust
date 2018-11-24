@@ -22,6 +22,7 @@ load(
     "find_cpp_toolchain",
 )
 load("@bazel_skylib//lib:versions.bzl", "versions")
+load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_version//:def.bzl", "BAZEL_VERSION")
 
 CrateInfo = provider(
@@ -53,6 +54,7 @@ def _get_rustc_env(ctx):
         patch, pre = patch.split("-", 1)
     else:
         pre = ""
+    build_file_dir = paths.dirname(ctx.build_file_path)
     return {
         "CARGO_PKG_VERSION": version,
         "CARGO_PKG_VERSION_MAJOR": major,
@@ -63,6 +65,7 @@ def _get_rustc_env(ctx):
         "CARGO_PKG_NAME": ctx.label.name,
         "CARGO_PKG_DESCRIPTION": "",
         "CARGO_PKG_HOMEPAGE": "",
+        "CARGO_MANIFEST_DIR": build_file_dir,
     }
 
 def _get_compilation_mode_opts(ctx, toolchain):
